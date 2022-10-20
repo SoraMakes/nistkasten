@@ -1,0 +1,33 @@
+# https://raspberrypi.stackexchange.com/questions/23182/how-to-stream-video-from-raspberry-pi-camera-and-watch-it-live
+# ./v4l2rtspserver /dev/video0,hw:1,0 -A48000 -C1 -aS16_LE -P 8554 -W 1920 -H 1080 -F 20
+# rtsp://192.168.2.30:8554/unicast
+
+
+
+mkdir .ssh
+chmod 700 .ssh
+nano .ssh/authorized_keys
+chmod 600 .ssh/authorized_keys
+nano /etc/dhcpcd.conf
+# 160MB RAM for GPU and enable legacy camera
+sudo raspi-config
+sudo systemctl reboot
+
+
+# set password to something random. Wont require it anymore since keyfile is present and sudo does not require a password
+passwd
+sudo apt update && sudo apt dist-upgrade -y
+sudo apt install -y liblivemedia-dev liblog4cpp5-dev libasound2-dev git build-essential cmake cmake . && make
+git clone https://github.com/mpromonet/v4l2rtspserver.git
+cd v4l2rtspserver
+cmake . && make
+sudo make install
+sudo cp v4l2rtspserver.service /etc/systemd/system/
+
+# set command, currently /dev/video0,hw:1,0 -A48000 -C1 -aS16_LE -P 8554 -W 1920 -H 1080 -F 20
+sudo nano /etc/systemd/system/v4l2rtspserver.service
+sudo systemctl daemon-reload
+sudo systemctl enable v4l2rtspserver
+
+# set readonly mode
+sudo raspi-config
