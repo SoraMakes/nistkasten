@@ -2,6 +2,10 @@
 # ./v4l2rtspserver /dev/video0,hw:1,0 -A48000 -C1 -aS16_LE -P 8554 -W 1920 -H 1080 -F 20
 # rtsp://192.168.2.30:8554/unicast
 
+WLAN_SSID="WLAN-Name"
+WLAN_PASS="abc"
+WLAN_BSSID="00:00:00:00:00:00
+
 
 
 mkdir .ssh
@@ -12,6 +16,21 @@ nano /etc/dhcpcd.conf
 # 160MB RAM for GPU and enable legacy camera
 sudo raspi-config
 sudo systemctl reboot
+
+# switch wifi to bssid connect mode
+wpa_passphrase $WLAN_SSID $WLAN_PASS
+# replace the "network" block in wpa_supplicant.conf with the one from command above and replace ssid with bssid (bssid=00:00:00...)
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+# should look like that:
+# ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+# update_config=1
+# country=DE
+# network={
+#         ssid="WLAN-Name"
+#         bssid=04:B4:FE:C7:7C:A0
+#         #psk="abc"
+#         psk=a013...50c4
+# }
 
 
 # set password to something random. Wont require it anymore since keyfile is present and sudo does not require a password

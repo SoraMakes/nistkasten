@@ -1,0 +1,12 @@
+[Unit]
+Description=FFmpeg RTSP Streaming Service
+After=mediamtx.service
+Requires=mediamtx.service
+
+[Service]
+ExecStart=/bin/bash -c ' libcamera-vid -v 0 -t 0 -b 5000000 --width 1920 --height 1080 --framerate 30 --codec h264 --inline --output - | ffmpeg -i - -f alsa -thread_queue_size 1024 -ac 1 -ar 48000 -i plughw:1,0 -vcodec copy -acodec libopus -b:a 128k -af highpass=1000,afftdn=nf=-25 -f rtsp rtsp://localhost:8554/unicast -hide_banner -nostats'
+Restart=on-failure
+User=root
+
+[Install]
+WantedBy=multi-user.target

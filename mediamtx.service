@@ -1,0 +1,13 @@
+[Unit]
+Description=MediaMTX RTSP Server
+After=network.target
+Wants=network.target
+
+[Service]
+ExecStart=/opt/mediamtx/mediamtx
+Restart=on-failure
+User=root
+WorkingDirectory=/opt/mediamtx
+
+[Install]
+WantedBy=multi-user.target
