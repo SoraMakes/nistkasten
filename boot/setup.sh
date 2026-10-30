@@ -8,7 +8,7 @@ BOOT=/boot/firmware
 
 # --- 1. packages ---
 apt-get update
-apt-get install -y ffmpeg zram-tools
+apt-get install -y ffmpeg
 
 # --- 2. SSH key + passwordless sudo for markus ---
 mkdir -p /home/markus/.ssh
@@ -18,13 +18,7 @@ chmod 700 /home/markus/.ssh
 chmod 600 /home/markus/.ssh/authorized_keys || true
 echo "markus ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/markus
 
-# --- 3. zram instead of SD swap ---
-printf 'ALGO=zstd\nPERCENT=100\nPRIORITY=100\n' > /etc/default/zramswap
-systemctl restart zramswap
-swapoff /var/swap || true
-systemctl disable var-swap.swap || true
-
-# --- 4. mediamtx ---
+# --- 3. mediamtx ---
 MTX_VER="v1.21.3"
 mkdir -p /opt/mediamtx
 cd /tmp
@@ -48,7 +42,7 @@ paths:
 EOF
 cp "$BOOT/mediamtx.service" /etc/systemd/system/
 
-# --- 5. stream script + service ---
+# --- 4. stream script + service ---
 cp "$BOOT/ffmpeg_cmd.sh" /opt/ffmpeg_cmd.sh
 chmod 755 /opt/ffmpeg_cmd.sh
 cp "$BOOT/ffmpeg-stream.service" /etc/systemd/system/
