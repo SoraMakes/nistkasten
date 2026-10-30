@@ -1,4 +1,4 @@
-# nistkasten boot partition additions (Bookworm, /boot/firmware)
+# nistkasten boot partition additions (Trixie, /boot/firmware)
 # Append to existing config.txt:
 dtparam=i2s=on
 dtoverlay=googlevoicehat-soundcard
