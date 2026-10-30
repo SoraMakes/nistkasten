@@ -16,7 +16,7 @@ Raspberry Pi 3A+ nest-box camera: 1080p25 H264 + INMP441 I2S mic via MediaMTX (R
    ```
    sudo bash /boot/firmware/setup.sh
    ```
-   (installs everything, then reboot once for the I2S overlay)
+   (installs everything and reboots once for the I2S overlay)
 
 ## Stream URLs
 

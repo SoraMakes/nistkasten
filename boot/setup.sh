@@ -51,4 +51,5 @@ systemctl daemon-reload
 systemctl enable mediamtx.service ffmpeg-stream.service
 systemctl start mediamtx.service ffmpeg-stream.service
 
-echo "setup done. reboot recommended (I2S overlay needs it): sudo reboot"
+echo "setup done, rebooting"
+systemctl reboot
