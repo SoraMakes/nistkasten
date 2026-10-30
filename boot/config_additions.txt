@@ -1,0 +1,5 @@
+# nistkasten boot partition additions (Bookworm, /boot/firmware)
+# Append to existing config.txt:
+dtparam=i2s=on
+dtoverlay=googlevoicehat-soundcard
+gpu_mem=128
