@@ -7,28 +7,28 @@ set -e
 BOOT=/boot/firmware
 
 # --- 1. packages ---
-apt-get update -qq
-apt-get install -y -qq ffmpeg zram-tools
+apt-get update
+apt-get install -y ffmpeg zram-tools
 
 # --- 2. SSH key + passwordless sudo for markus ---
 mkdir -p /home/markus/.ssh
 [ -f "$BOOT/authorized_keys" ] && cat "$BOOT/authorized_keys" >> /home/markus/.ssh/authorized_keys
 chown -R markus:markus /home/markus/.ssh
 chmod 700 /home/markus/.ssh
-chmod 600 /home/markus/.ssh/authorized_keys 2>/dev/null || true
+chmod 600 /home/markus/.ssh/authorized_keys || true
 echo "markus ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/markus
 
 # --- 3. zram instead of SD swap ---
 printf 'ALGO=zstd\nPERCENT=100\nPRIORITY=100\n' > /etc/default/zramswap
 systemctl restart zramswap
-swapoff /var/swap 2>/dev/null || true
-systemctl disable var-swap.swap 2>/dev/null || true
+swapoff /var/swap || true
+systemctl disable var-swap.swap || true
 
 # --- 4. mediamtx ---
 MTX_VER="v1.21.3"
 mkdir -p /opt/mediamtx
 cd /tmp
-curl -sLO "https://github.com/bluenviron/mediamtx/releases/download/${MTX_VER}/mediamtx_${MTX_VER}_linux_arm64.tar.gz"
+curl -LO "https://github.com/bluenviron/mediamtx/releases/download/${MTX_VER}/mediamtx_${MTX_VER}_linux_arm64.tar.gz"
 tar xzf "mediamtx_${MTX_VER}_linux_arm64.tar.gz" -C /opt/mediamtx mediamtx
 chmod +x /opt/mediamtx/mediamtx
 cat > /opt/mediamtx/mediamtx.yml <<'EOF'

@@ -12,5 +12,5 @@ network:
       regulatory-domain: "DE"
       access-points:
         "WLAN-Heck":
-          password: "WIFI_PASSWORD"
+          password: "REPLACE_ME"
       optional: true

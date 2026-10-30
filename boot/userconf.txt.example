@@ -1,3 +1,0 @@
-# Create user "markus" with password hash (openssl passwd -6 changeme)
-# Rename to userconf.txt on the boot partition
-markus:$6$REPLACE_WITH_HASH

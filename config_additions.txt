@@ -1,5 +1,5 @@
 # nistkasten boot partition additions (Trixie, /boot/firmware)
-# Append to existing config.txt:
+# Append to the end of config.txt, after the final [all] line:
 dtparam=i2s=on
 dtoverlay=googlevoicehat-soundcard
 gpu_mem=128

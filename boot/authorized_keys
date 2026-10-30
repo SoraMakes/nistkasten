@@ -1,0 +1,2 @@
+# One SSH public key per line, e.g. ssh-ed25519 AAAA... user@host
+# setup.sh copies this file to ~/.ssh/authorized_keys.
