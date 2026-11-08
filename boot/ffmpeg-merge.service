@@ -1,0 +1,13 @@
+[Unit]
+Description=Merge local video+audio RTSP into unicast path
+After=mediamtx.service
+Requires=mediamtx.service
+
+[Service]
+ExecStart=/opt/ffmpeg_merge.sh
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

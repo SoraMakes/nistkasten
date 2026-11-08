@@ -1,0 +1,2 @@
+markus:$6$REPLACE_WITH_HASH
+# Replace the hash above: openssl passwd -6
