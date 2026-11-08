@@ -7,8 +7,16 @@ set -e
 BOOT=/boot/firmware
 
 # --- 1. packages ---
+# ffmpeg is the only real dependency: alsa-utils (arecord) ships with the base
+# image, and zram swap is enabled by default via systemd-zram-generator.
 apt-get update
 apt-get install -y ffmpeg
+
+# --- 1b. ALSA config for the INMP441 I2S mic ---
+cat > /etc/asound.conf <<'EOF'
+pcm.inmp { type plug slave { pcm "hw:CARD=sndrpigooglevoi,DEV=0" } }
+ctl.inmp { type hw card sndrpigooglevoi }
+EOF
 
 # --- 2. SSH key + passwordless sudo for markus ---
 mkdir -p /home/markus/.ssh
@@ -32,24 +40,35 @@ rtspAddress: :8554
 hls: yes
 hlsAddress: :8888
 hlsVariant: lowLatency
-hlsSegmentCount: 7
+hlsSegmentCount: 3
 hlsSegmentDuration: 1s
 hlsPartDuration: 100ms
 webrtc: yes
 webrtcAddress: :8889
+readTimeout: 30s
+writeTimeout: 30s
+writeQueueSize: 2048
 paths:
   unicast:
+  audio:
+  video:
 EOF
 cp "$BOOT/mediamtx.service" /etc/systemd/system/
 
-# --- 4. stream script + service ---
+# --- 4. stream scripts + services ---
+# audio+video are published separately (video path, audio path) because the
+# I2S capture xruns when ffmpeg holds the hw device together with video;
+# ffmpeg-merge combines both into "unicast".
 cp "$BOOT/ffmpeg_cmd.sh" /opt/ffmpeg_cmd.sh
 chmod 755 /opt/ffmpeg_cmd.sh
 cp "$BOOT/ffmpeg-stream.service" /etc/systemd/system/
+cp "$BOOT/ffmpeg_merge.sh" /opt/ffmpeg_merge.sh
+chmod 755 /opt/ffmpeg_merge.sh
+cp "$BOOT/ffmpeg-merge.service" /etc/systemd/system/
 
 systemctl daemon-reload
-systemctl enable mediamtx.service ffmpeg-stream.service
-systemctl start mediamtx.service ffmpeg-stream.service
+systemctl enable mediamtx.service ffmpeg-stream.service ffmpeg-merge.service
+systemctl start mediamtx.service ffmpeg-stream.service ffmpeg-merge.service
 
 echo "setup done, rebooting"
 systemctl reboot
