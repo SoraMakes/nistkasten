@@ -5,7 +5,7 @@ Requires=mediamtx.service
 
 [Service]
 ExecStart=/opt/ffmpeg_cmd.sh
-Restart=on-failure
+Restart=always
 RestartSec=5
 User=root
 
