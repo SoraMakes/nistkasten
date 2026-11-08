@@ -18,13 +18,15 @@ pcm.inmp { type plug slave { pcm "hw:CARD=sndrpigooglevoi,DEV=0" } }
 ctl.inmp { type hw card sndrpigooglevoi }
 EOF
 
-# --- 2. SSH key + passwordless sudo for markus ---
-mkdir -p /home/markus/.ssh
-[ -f "$BOOT/authorized_keys" ] && cat "$BOOT/authorized_keys" >> /home/markus/.ssh/authorized_keys
-chown -R markus:markus /home/markus/.ssh
-chmod 700 /home/markus/.ssh
-chmod 600 /home/markus/.ssh/authorized_keys || true
-echo "markus ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/markus
+# --- 2. SSH key + passwordless sudo for the login user ---
+USER_NAME="${SUDO_USER:-markus}"
+USER_HOME=$(getent passwd "$USER_NAME" | cut -d: -f6)
+mkdir -p "$USER_HOME/.ssh"
+[ -f "$BOOT/authorized_keys" ] && cat "$BOOT/authorized_keys" >> "$USER_HOME/.ssh/authorized_keys"
+chown -R "$USER_NAME:$USER_NAME" "$USER_HOME/.ssh"
+chmod 700 "$USER_HOME/.ssh"
+chmod 600 "$USER_HOME/.ssh/authorized_keys" || true
+echo "$USER_NAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/nistkasten
 
 # --- 3. mediamtx ---
 MTX_VER="v1.21.3"
